@@ -27,3 +27,5 @@ const createWallet = async () => {
 
     // console.log(wallet1.address === wallet3.address);
 };
+
+// 2.
