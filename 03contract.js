@@ -1,108 +1,18 @@
 import { ethers } from "ethers";
+import dotenv from "dotenv";
 
-const INFURA_ID = "https://sepolia.infura.io/v3/52c6c2c2ced247ac92b87ecf3fd7b169";
+dotenv.config();
 
-// 连接以太坊测试网
+const provider = new ethers.JsonRpcProvider(process.env.INFURA_ID)
 
-const provider = new ethers.JsonRpcProvider(INFURA_ID);
+/**
+ * 我用 uniswap 将账户中的WTh转成WETH 
+ * WETH合约地址是  0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14
+ * 获取abi的 网址是 https://sepolia.etherscan.io/address/0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14#code
+ */
+const abiWETH = [{ "constant": true, "inputs": [], "name": "name", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "guy", "type": "address" }, { "name": "wad", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "totalSupply", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "src", "type": "address" }, { "name": "dst", "type": "address" }, { "name": "wad", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "wad", "type": "uint256" }], "name": "withdraw", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "decimals", "outputs": [{ "name": "", "type": "uint8" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }], "name": "balanceOf", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "symbol", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "dst", "type": "address" }, { "name": "wad", "type": "uint256" }], "name": "transfer", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [], "name": "deposit", "outputs": [], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }, { "name": "", "type": "address" }], "name": "allowance", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "payable": true, "stateMutability": "payable", "type": "fallback" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "src", "type": "address" }, { "indexed": true, "name": "guy", "type": "address" }, { "indexed": false, "name": "wad", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "src", "type": "address" }, { "indexed": true, "name": "dst", "type": "address" }, { "indexed": false, "name": "wad", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "dst", "type": "address" }, { "indexed": false, "name": "wad", "type": "uint256" }], "name": "Deposit", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "src", "type": "address" }, { "indexed": false, "name": "wad", "type": "uint256" }], "name": "Withdrawal", "type": "event" }]
 
-const abiWETH = [
-    {
-        anonymous: false,
-        inputs: [
-            { indexed: true, internalType: "address", name: "src", type: "address" },
-            { indexed: true, internalType: "address", name: "guy", type: "address" },
-            { indexed: false, internalType: "uint256", name: "wad", type: "uint256" },
-        ],
-        name: "Approval",
-        type: "event",
-    },
-    {
-        anonymous: false,
-        inputs: [
-            { indexed: true, internalType: "address", name: "dst", type: "address" },
-            { indexed: false, internalType: "uint256", name: "wad", type: "uint256" },
-        ],
-        name: "Deposit",
-        type: "event",
-    },
-    {
-        anonymous: false,
-        inputs: [
-            { indexed: true, internalType: "address", name: "src", type: "address" },
-            { indexed: true, internalType: "address", name: "dst", type: "address" },
-            { indexed: false, internalType: "uint256", name: "wad", type: "uint256" },
-        ],
-        name: "Transfer",
-        type: "event",
-    },
-    {
-        anonymous: false,
-        inputs: [
-            { indexed: true, internalType: "address", name: "src", type: "address" },
-            { indexed: false, internalType: "uint256", name: "wad", type: "uint256" },
-        ],
-        name: "Withdrawal",
-        type: "event",
-    },
-    {
-        inputs: [
-            { internalType: "address", name: "", type: "address" },
-            { internalType: "address", name: "", type: "address" },
-        ],
-        name: "allowance",
-        outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-        stateMutability: "view",
-        type: "function",
-    },
-    {
-        inputs: [
-            { internalType: "address", name: "guy", type: "address" },
-            { internalType: "uint256", name: "wad", type: "uint256" },
-        ],
-        name: "approve",
-        outputs: [{ internalType: "bool", name: "", type: "bool" }],
-        stateMutability: "nonpayable",
-        type: "function",
-    },
-    {
-        inputs: [{ internalType: "address", name: "", type: "address" }],
-        name: "balanceOf",
-        outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-        stateMutability: "view",
-        type: "function",
-    },
-    { inputs: [], name: "decimals", outputs: [{ internalType: "uint8", name: "", type: "uint8" }], stateMutability: "view", type: "function" },
-    { inputs: [], name: "deposit", outputs: [], stateMutability: "payable", type: "function" },
-    { inputs: [], name: "name", outputs: [{ internalType: "string", name: "", type: "string" }], stateMutability: "view", type: "function" },
-    { inputs: [], name: "symbol", outputs: [{ internalType: "string", name: "", type: "string" }], stateMutability: "view", type: "function" },
-    { inputs: [], name: "totalSupply", outputs: [{ internalType: "uint256", name: "", type: "uint256" }], stateMutability: "view", type: "function" },
-    {
-        inputs: [
-            { internalType: "address", name: "dst", type: "address" },
-            { internalType: "uint256", name: "wad", type: "uint256" },
-        ],
-        name: "transfer",
-        outputs: [{ internalType: "bool", name: "", type: "bool" }],
-        stateMutability: "nonpayable",
-        type: "function",
-    },
-    {
-        inputs: [
-            { internalType: "address", name: "src", type: "address" },
-            { internalType: "address", name: "dst", type: "address" },
-            { internalType: "uint256", name: "wad", type: "uint256" },
-        ],
-        name: "transferFrom",
-        outputs: [{ internalType: "bool", name: "", type: "bool" }],
-        stateMutability: "nonpayable",
-        type: "function",
-    },
-    { inputs: [{ internalType: "uint256", name: "wad", type: "uint256" }], name: "withdraw", outputs: [], stateMutability: "nonpayable", type: "function" },
-    { stateMutability: "payable", type: "receive" },
-];
-
-const addressWETH = "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9";
+const addressWETH = "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14";
 const contractWETH = new ethers.Contract(addressWETH, abiWETH, provider);
 
 async function main() {
@@ -117,8 +27,8 @@ async function main() {
     console.log("代号:", symbolWETH);
     console.log("总供应量:", ethers.formatEther(totalSupplyWETH));
 
-    const balanceWETH = await contractWETH.balanceOf("vitalik.eth");
-    console.log("vitalik.eth的WETH余额:", ethers.formatEther(balanceWETH));
+    const balanceWETH = await contractWETH.balanceOf('0x8d2E185C8422021D7A23C9bFAc3064e37348FAB8');
+    console.log("我的WETH余额:", ethers.formatEther(balanceWETH));
 }
 
 main();
