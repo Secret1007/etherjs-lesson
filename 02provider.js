@@ -36,7 +36,6 @@ async function main() {
   console.log(block);
 
   // 7.利用getCode()查询某个地址的合约bytecode，参数为合约地址，下面例子中用的Sepolia WETH的合约地址
-  0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14
   const code = await provider.getCode("0xf531B8F309Be94191af87605CfBf600D71C2cFe0");
   console.log(code);
 }
