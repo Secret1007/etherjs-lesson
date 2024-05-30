@@ -8,7 +8,7 @@ const provider = ethers.getDefaultProvider();
 
 const main = async () => {
     const balance = await provider.getBalance("vitalik.eth");
-    console.log("balance:", balance, ethers.formatEther(balance));
+    console.log("balance (wei):", balance.toString(), "balance (ether):", ethers.formatEther(balance));
 };
 
 main();
