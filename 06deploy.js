@@ -16,7 +16,7 @@ const abiERC20 = [
   "function mint(uint amount) external",
 ];
 // 填入合约字节码，在remix中，你可以在两个地方找到Bytecode
-// 1. 编译面板的Bytecode按钮
+// 1. 编译面板的Bytecode按钮  
 // 2. 文件面板artifact文件夹下与合约同名的json文件中
 // 里面"bytecode"属性下的"object"字段对应的数据就是Bytecode，挺长的，608060起始
 // "object": "608060405260646000553480156100...
@@ -55,7 +55,6 @@ async function main() {
   console.log("等待交易上链")
   await tx.wait()
   console.log(`Secret钱包中的代币余额: ${await contractERC20.balanceOf("0xc92Ad23a1dAC9d6C2CdE3943cFc41ec5b483Bb2b")}`)
-
 }
 
 main()

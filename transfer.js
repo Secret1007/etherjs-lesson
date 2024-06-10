@@ -8,3 +8,18 @@ abi.forEach(item => {
     console.log(`${item.name}(${inputs})`);
   }
 });
+/**
+ *  name()
+    approve(address guy, uint256 wad)
+    totalSupply()
+    transferFrom(address src, address dst, uint256 wad)
+    withdraw(uint256 wad)
+    decimals()
+    balanceOf(address )
+    symbol()
+    transfer(address dst, uint256 wad)
+    deposit()
+    allowance(address , address )
+ * 
+ * 
+ */
