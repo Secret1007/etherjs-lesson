@@ -21,7 +21,7 @@ const balanceDAI = await contractDAI.balanceOf(address)
 console.log(`DAI持仓: ${ethers.formatEther(balanceDAI)}\n`)
 
 console.log("\n2.  用staticCall尝试调用transfer转账1 DAI，msg.sender为Vitalik地址")
-// 发起交易
+// 发起交易 
 const tx = await contractDAI.transfer.staticCall("vitalik.eth", ethers.parseEther("1"), { from: await provider.resolveName("vitalik.eth") })
 console.log(`交易会成功吗？：`, tx)
 
